@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<!--http://www.mybatis.org/generator/configreference/xmlconfig.html-->
+
+<generatorConfiguration>
+
+    <context id="MySQLTables" targetRuntime="MyBatis3">
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://127.0.0.1:3306/seckill"
+                        userId="root"
+                        password="root">
+        </jdbcConnection>
+
+        <!--生成 DataObject 类存放位置-->
+        <javaModelGenerator targetPackage="com.karonda.dataobject" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true" />
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+
+        <!--生成映射文件存放位置-->
+        <sqlMapGenerator targetPackage="mapping"  targetProject="src/main/resources">
+            <property name="enableSubPackages" value="true" />
+        </sqlMapGenerator>
+
+        <!--生成 Dao 类存放位置-->
+        <!--客户端代码，生成易于使用的针对 Model 对象和 XML 配置文件的代码-->
+            <!--type="ANNOTATEDMAPPER", 生成 Java Model 和基于注解的 Mapper 对象-->
+            <!--type="MIXEDMAPPER", 生成基于注解的 Java Model 和相应的 Mapper 对象-->
+            <!--type="XMLMAPPER", 生成 SQLMap XML 文件和独立的 Mapper 接口-->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.karonda.dao"  targetProject="src/main/java">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+
+        <!--生成对应表及类名-->
+        <!--*Example 禁用自动生成的复杂查询-->
+        <table tableName="user_info" domainObjectName="UserDO"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false"></table>
+        <table tableName="user_password" domainObjectName="UserPasswordDO"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false"></table>
+
+    </context>
+</generatorConfiguration>
