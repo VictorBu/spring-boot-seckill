@@ -60,10 +60,32 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "手机号码已注册");
         }
 
+        userModel.setId(userDO.getId()); // 获取自增 id
+
         UserPasswordDO userPasswordDO = convertPasswordFromModel(userModel);
         userPasswordDOMapper.insertSelective(userPasswordDO);
 
         return;
+    }
+
+    @Override
+    public UserModel validateLogin(String telphone, String encrptPassword) throws BusinessException {
+
+        UserDO userDO = userDOMapper.selectByTelphone(telphone);
+
+        if(userDO == null){
+            throw new BusinessException(EmBusinessError.USER_LOGIN_FAIL);
+        }
+
+        UserPasswordDO userPasswordDO = userPasswordDOMapper.selectByUserId(userDO.getId());
+
+        UserModel userModel = convertFromDataObject(userDO, userPasswordDO);
+
+        if(!StringUtils.equals(encrptPassword, userModel.getEncrptPassword())){
+            throw new BusinessException(EmBusinessError.USER_LOGIN_FAIL);
+        }
+
+        return userModel;
     }
 
     private UserDO convertFromModel(UserModel userModel){

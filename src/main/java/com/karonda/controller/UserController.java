@@ -31,6 +31,24 @@ public class UserController extends BaseController{
     @Autowired
     private HttpServletRequest httpServletRequest;
 
+    @RequestMapping(value = "/login", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
+    @ResponseBody
+    public CommonReturnType login(@RequestParam(name="telphone") String telphone,
+                                     @RequestParam(name="password") String password)
+            throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
+
+        if(StringUtils.isEmpty(telphone) || StringUtils.isEmpty(password)){
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
+        }
+
+        UserModel userModel = userService.validateLogin(telphone, EncodeByMd5(password));
+
+        httpServletRequest.getSession().setAttribute("LOGIN", true);
+        httpServletRequest.getSession().setAttribute("LOGIN_USER", userModel);
+
+        return CommonReturnType.create(null);
+    }
+
     @RequestMapping(value = "/register", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
     @ResponseBody
     public CommonReturnType register(@RequestParam(name="telphone") String telphone,
