@@ -1,0 +1,84 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    </head>
+    
+    <body>
+        <div id="app">
+            <el-row>
+                <el-col :span="8" :offset="8">
+                    <h3>创建商品</h3>
+                    <el-form ref="form" :model="form" label-width="80px">
+                        <el-form-item label="商品名">
+                            <el-input v-model="form.title"></el-input>
+                        </el-form-item>
+                        <el-form-item label="商品描述">
+                            <el-input v-model="form.description"></el-input>
+                        </el-form-item>
+                        <el-form-item label="价格">
+                            <el-input v-model="form.price"></el-input>
+                        </el-form-item>
+                        <el-form-item label="图片">
+                            <el-input v-model="form.imgUrl"></el-input>
+                        </el-form-item>
+                        <el-form-item label="库存">
+                            <el-input v-model="form.stock"></el-input>
+                        </el-form-item>
+                        
+                        <el-form-item>
+                            <el-button type="primary" @click="onSubmit">提交</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-col>
+            </el-row>
+        </div>
+    </body>
+    
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                form: {
+                    title: '',
+                    price: 0,
+                    description: '',
+                    stock: 1,
+                    imgUrl: '',
+                }
+            },
+            methods: {
+                onSubmit(){
+                
+                    // https://www.cnblogs.com/yesyes/p/8432101.html
+                    axios({
+                        method: 'post',
+                        url: 'http://localhost:8080/item/create',
+                        data: this.form, 
+                        params: this.form,
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        withCredentials: true,
+                    })
+                    .then(resp=>{
+                        if(resp.data.status == 'success'){
+                            this.$message({
+                                message: '创建成功',
+                                type: 'success'
+                            });
+                        }else{
+                            this.$message.error('创建失败，原因为：' + resp.data.data.errMsg);
+                        }
+                    })
+                    .catch(err =>{
+                        this.$message.error('创建失败，原因为：' + err.status + ', ' + err.statusText);
+                    });
+                },
+            },
+            
+        });
+    </script>
+
+</html>

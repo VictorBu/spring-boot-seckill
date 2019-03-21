@@ -10,5 +10,6 @@ a seckill online shopping project developed by spring boot 2
 1. [用户注册](https://www.cnblogs.com/victorbu/p/10556121.html)
 1. [用户登陆](https://www.cnblogs.com/victorbu/p/10561835.html)
 1. [自动校验](https://www.cnblogs.com/victorbu/p/10564729.html)
+1. [商品创建](https://www.cnblogs.com/victorbu/p/10573393.html)
 
 
