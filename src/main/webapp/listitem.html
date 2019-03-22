@@ -1,0 +1,95 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    </head>
+    
+    <body>
+        <div id="app">
+            <!--<item-list-->
+                <!--v-for="item in items"-->
+                <!--v-bind:item="item"-->
+                <!--v-bind:key="item.id"></item-list>-->
+            <template>
+                <el-table
+                        :data="items"
+                        @row-click="handleClick"
+                        stripe
+                        style="width: 100%">
+                    <el-table-column
+                            prop="title"
+                            label="商品名"
+                            width="180">
+                    </el-table-column>
+                    <el-table-column
+                            label="商品图片"
+                            width="180">
+                        <template slot-scope="scope">
+                            <img :src="scope.row.imgUrl"  min-width="70" height="70" />
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="description"
+                            label="商品描述">
+                    </el-table-column>
+                    <el-table-column
+                            prop="price"
+                            label="商品价格">
+                    </el-table-column>
+                    <el-table-column
+                            prop="stock"
+                            label="商品库存">
+                    </el-table-column>
+                    <el-table-column
+                            prop="sales"
+                            label="商品销量">
+                    </el-table-column>
+                </el-table>
+            </template>
+        </div>
+    </body>
+    
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script>
+        // Vue.component('item-list',{
+        //     props: ['item'],
+        //     template:'<li>{{item.title}}</li>'
+        // });
+        var app = new Vue({
+            el: '#app',
+            data: {
+                items: [],
+            },
+            methods: {
+                getItems(){
+                
+                    // https://www.cnblogs.com/yesyes/p/8432101.html
+                    axios({
+                        method: 'get',
+                        url: 'http://localhost:8080/item/list',
+                        withCredentials: true,
+                    })
+                    .then(resp=>{
+                        if(resp.data.status == 'success'){
+                            this.items = resp.data.data;
+                        }else{
+                            this.$message.error('获取商品列表失败，原因为：' + resp.data.data.errMsg);
+                        }
+                    })
+                    .catch(err =>{
+                        this.$message.error('获取商品列表失败，原因为：' + err.status + ', ' + err.statusText);
+                    });
+                },
+                handleClick(row){
+                    window.location.href='getitem.html?id=' + row.id;
+                },
+            },
+            mounted() {
+                this.getItems()
+            },
+        });
+    </script>
+
+</html>

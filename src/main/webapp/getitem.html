@@ -1,0 +1,83 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    </head>
+    
+    <body>
+        <div id="app">
+            <el-row>
+                <el-col :span="8" :offset="8">
+                    <h3>{{item.title}}</h3>
+                    <el-form ref="form" :model="form" label-width="80px">
+                        <el-form-item label="商品描述">
+                            <label>{{item.description}}</label>
+                        </el-form-item>
+                        <el-form-item label="价格">
+                            <label>{{item.price}}</label>
+                        </el-form-item>
+                        <el-form-item label="图片">
+                            <img :src="item.imgUrl"  min-width="70" height="70" />
+                        </el-form-item>
+                        <el-form-item label="库存">
+                            <label>{{item.stock}}</label>
+                        </el-form-item>
+                        <el-form-item label="销量">
+                            <label>{{item.sales}}</label>
+                        </el-form-item>
+                    </el-form>
+                </el-col>
+            </el-row>
+        </div>
+    </body>
+    
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                item: {},
+                form: {
+                    id: 0,
+                },
+            enable: true,
+            },
+            methods: {
+                getItem(){
+                    this.form.id = this.getUrlKey("id");
+                
+                    // https://www.cnblogs.com/yesyes/p/8432101.html
+                    axios({
+                        method: 'get',
+                        url: 'http://localhost:8080/item/get',
+                        params: this.form,
+                        withCredentials: true,
+                    })
+                    .then(resp=>{
+                        if(resp.data.status == 'success'){
+                            this.item = resp.data.data;
+                        }else{
+                            this.$message.error('获取商品失败，原因为：' + resp.data.data.errMsg);
+                        }
+                    })
+                    .catch(err =>{
+                        this.$message.error('获取商品失败，原因为：' + err.status + ', ' + err.statusText);
+                    });
+                },
+
+                // https://www.cnblogs.com/xyyt/p/6068981.html
+                getUrlKey(name){
+                    return decodeURIComponent(
+                        (new RegExp('[?|&]'+name+'='+'([^&;]+?)(&|#|;|$)')
+                            .exec(location.href)||[,""])[1].replace(/\+/g,'%20'))||null;
+                },
+            },
+            mounted() {
+                this.getItem()
+            },
+        });
+    </script>
+
+</html>
