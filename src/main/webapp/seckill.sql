@@ -20,7 +20,7 @@ create table if not exists user_password (
 create table if not exists item (
     id int not null auto_increment,
     title varchar(64) not null default '',
-    price double(10, 0) not null default 0,
+    price double(10, 2) not null default 0,
     description varchar(500) null default '',
     sales int not null default 0,
     img_url varchar(200) null default '',
@@ -33,3 +33,23 @@ create table if not exists item_stock (
     item_id int not null default 0,
     primary key (id)
 );
+
+create table if not exists order_info (
+    id varchar(32) not null default '',
+    user_id int not null default 0,
+    item_id int not null default 0,
+    item_price double(10, 2) not null default 0,
+    amount int not null default 0,
+    order_price double(10, 2) default 0,
+    primary key (id)
+);
+
+create table if not exists sequence_info (
+    name varchar(64) not null default '',
+    current_value int not null default 0,
+    step int not null default 1,
+    primary key (name)
+);
+insert into sequence_info (name, current_value, step) values ('order_info', 1, 1);
+
+
