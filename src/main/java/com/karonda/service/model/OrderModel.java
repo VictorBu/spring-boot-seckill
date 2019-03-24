@@ -6,6 +6,10 @@ public class OrderModel {
     private String id;
     private Integer userId;
     private Integer itemId;
+
+    // 若非空，则表示以秒杀方式下单
+    private Integer promoId;
+
     private BigDecimal itemPrice;
     private Integer amount;
     private BigDecimal orderPrice;
@@ -56,5 +60,13 @@ public class OrderModel {
 
     public void setOrderPrice(BigDecimal orderPrice) {
         this.orderPrice = orderPrice;
+    }
+
+    public Integer getPromoId() {
+        return promoId;
+    }
+
+    public void setPromoId(Integer promoId) {
+        this.promoId = promoId;
     }
 }

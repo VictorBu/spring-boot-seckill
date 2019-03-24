@@ -41,6 +41,7 @@ create table if not exists order_info (
     item_price double(10, 2) not null default 0,
     amount int not null default 0,
     order_price double(10, 2) default 0,
+    promo_id int not null default 0,
     primary key (id)
 );
 
@@ -51,5 +52,16 @@ create table if not exists sequence_info (
     primary key (name)
 );
 insert into sequence_info (name, current_value, step) values ('order_info', 1, 1);
+
+create table if not exists promo (
+    id int not null auto_increment,
+    promo_name varchar(64) not null default '',
+    start_date datetime not null default '0000-00-00 00:00:00',
+    end_date datetime not null default '0000-00-00 00:00:00',
+    item_id int not null default 0,
+    promo_item_price double(10,2) not null default 0,
+    primary key (id)
+);
+insert into promo (promo_name, start_date, end_date, item_id, promo_item_price) values ('秒杀活动', now(),'2019-12-31 11:59:59', 1, 10);
 
 

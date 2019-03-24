@@ -7,7 +7,9 @@ import com.karonda.dataobject.ItemStockDO;
 import com.karonda.error.BusinessException;
 import com.karonda.error.EmBusinessError;
 import com.karonda.service.ItemService;
+import com.karonda.service.PromoService;
 import com.karonda.service.model.ItemModel;
+import com.karonda.service.model.PromoModel;
 import com.karonda.validator.ValidationResult;
 import com.karonda.validator.ValidatorImpl;
 import org.springframework.beans.BeanUtils;
@@ -30,6 +32,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Autowired
     private ItemStockDOMapper itemStockDOMapper;
+
+    @Autowired
+    private PromoService promoService;
 
     @Override
     @Transactional
@@ -74,6 +79,12 @@ public class ItemServiceImpl implements ItemService {
         ItemStockDO itemStockDO = itemStockDOMapper.selectByItemId(itemDO.getId());
 
         ItemModel itemModel = convertFromDataObject(itemDO, itemStockDO);
+
+        PromoModel promoModel = promoService.getPromoByItemId(itemModel.getId());
+
+        if(promoModel != null && promoModel.getStatus().intValue() != 3){
+            itemModel.setPromoModel(promoModel);
+        }
 
         return itemModel;
     }

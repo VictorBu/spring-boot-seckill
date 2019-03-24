@@ -10,11 +10,18 @@
                 <el-col :span="8" :offset="8">
                     <h3>{{item.title}}</h3>
                     <el-form ref="form" :model="form" label-width="80px">
+                    
+                        
+                        <label style="color:red;">{{start_date}}</label>
+                        
                         <el-form-item label="商品描述">
                             <label>{{item.description}}</label>
                         </el-form-item>
-                        <el-form-item label="价格">
+                        <el-form-item label="价格" v-if="item.promoStatus == 1">
                             <label>{{item.price}}</label>
+                        </el-form-item>
+                        <el-form-item label="秒杀价格" style="color:red;">
+                            <label>{{item.promoPrice}}</label>
                         </el-form-item>
                         <el-form-item label="图片">
                             <img :src="item.imgUrl"  min-width="70" height="70" />
@@ -27,7 +34,7 @@
                         </el-form-item>
                         
                         <el-form-item>
-                            <el-button type="primary" @click="onSubmit">下单</el-button>
+                            <el-button type="primary" @click="onSubmit" v-bind:disabled="item.promoStatus == 1">下单</el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>
@@ -50,12 +57,15 @@
                 submit_form: {
                     itemId: 0,
                     amount: 1,
+                    promoId: null,
                 },
-            enable: true,
+                timer: null,
+                start_date: '',
             },
             methods: {
                 onSubmit(){
                     this.submit_form.itemId = this.getUrlKey("id");
+                    this.submit_form.promoId = this.item.promoId;
             
                     // https://www.cnblogs.com/yesyes/p/8432101.html
                     axios({
@@ -99,6 +109,12 @@
                     .then(resp=>{
                         if(resp.data.status == 'success'){
                             this.item = resp.data.data;
+                            
+                            if(this.item.promoStatus == 1){
+                                this.setTimer();
+                            }else{
+                                start_date = '秒杀进行中';
+                            }
                         }else{
                             this.$message.error('获取商品失败，原因为：' + resp.data.data.errMsg);
                         }
@@ -114,9 +130,33 @@
                         (new RegExp('[?|&]'+name+'='+'([^&;]+?)(&|#|;|$)')
                             .exec(location.href)||[,""])[1].replace(/\+/g,'%20'))||null;
                 },
+                
+                setTimer() {
+                    if(this.timer == null) {
+                        this.timer = setInterval( () => {
+                            var startTime = this.item.startDate.replace(new RegExp('-', 'gm'), '/');
+                            startTime = (new Date(startTime)).getTime();
+                            var nowTime = Date.parse(new Date());
+                            var delta = (startTime - nowTime)/1000;
+                            if(delta <= 0){
+                                this.item.promoStatus = 2;
+                                this.start_date = '秒杀进行中';
+                                clearInterval(this.timer);
+                                this.timer = null;
+                            }else{
+                                this.start_date = '秒杀活动将于：' + this.item.startDate + ' 开始，倒计时：' + delta + ' 秒';
+                            }
+                            
+                        }, 1000);
+                    }
+                },
             },
             mounted() {
                 this.getItem()
+            },
+            destroyed: function () {
+                clearInterval(this.timer);
+                this.timer = null;
             },
         });
     </script>

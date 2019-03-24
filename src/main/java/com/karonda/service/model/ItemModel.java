@@ -21,6 +21,8 @@ public class ItemModel {
     @NotNull(message = "商品图片不能为空")
     private String imgUrl;
 
+    private PromoModel promoModel;
+
     public Integer getId() {
         return id;
     }
@@ -75,5 +77,13 @@ public class ItemModel {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    public PromoModel getPromoModel() {
+        return promoModel;
+    }
+
+    public void setPromoModel(PromoModel promoModel) {
+        this.promoModel = promoModel;
     }
 }
